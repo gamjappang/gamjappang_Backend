@@ -5,6 +5,7 @@ import demago.gamjappang.dto.auth.LoginRequest;
 import demago.gamjappang.model.User;
 import demago.gamjappang.service.UserService;
 import demago.gamjappang.jwt.JwtTokenProvider;
+import demago.gamjappang.config.auth.PrincipalDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -56,7 +57,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(username, password)
         );
 
-        var principal = (demago.gamjappang.config.auth.PrincipalDetails) auth.getPrincipal();
+        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
         String role = principal.getUser().getRole();
 
         String access = jwtTokenProvider.createAccessToken(username, role);
