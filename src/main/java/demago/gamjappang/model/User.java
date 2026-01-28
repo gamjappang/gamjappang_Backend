@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.security.Timestamp;
-
 @Entity
 @Table(name = "users")
 @Getter @Setter
@@ -29,6 +27,17 @@ public class User {
     @CreationTimestamp
     private java.time.LocalDateTime createdDate;
 
+    private String authCode;
+
+    public void Auth(String email, String authCode){
+        this.email = email;
+        this.authCode = authCode;
+    }
+
+    public void patch(String authCode){
+        this.authCode = authCode;
+    }
+
     @Builder
     public User(Long id, String username, String password, String email, String role, String provider, String providerId) {
         this.id = id;
@@ -38,6 +47,5 @@ public class User {
         this.role = role;
         this.provider = provider;
         this.providerId = providerId;
-        this.createdDate = createdDate;
     }
 }
