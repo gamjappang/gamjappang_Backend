@@ -30,4 +30,28 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    // OAuth 로그인 시 provider/providerId 기반으로 찾고 없으면 생성
+    @Transactional
+    public User findOrCreateOAuthUser(OAuth2UserInfo userInfo) {
+        String provider = userInfo.getProvider();
+        String providerId = userInfo.getProviderId();
+        String username = provider + "-" + providerId;
+
+        User userEntity = userRepository.findByUsername(username);
+        if (userEntity != null) {
+            return userEntity;
+        }
+
+        User newUser = User.builder()
+                .username(username)
+                .password(null) // 소셜 로그인은 비번 불필요
+                .email(userInfo.getEmail())
+                .role("ROLE_USER")
+                .provider(provider)
+                .providerId(providerId)
+                .build();
+
+        return userRepository.save(newUser);
+    }
 }
