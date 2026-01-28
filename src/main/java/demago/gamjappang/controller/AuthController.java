@@ -1,6 +1,7 @@
 package demago.gamjappang.controller;
 
 import demago.gamjappang.dto.auth.JoinRequest;
+import demago.gamjappang.dto.auth.LoginRequest;
 import demago.gamjappang.model.User;
 import demago.gamjappang.service.UserService;
 import demago.gamjappang.jwt.JwtTokenProvider;
@@ -47,9 +48,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody java.util.Map<String, String> body) {
-        String username = body.get("username");
-        String password = body.get("password");
+    public ResponseEntity<?> login(@RequestBody LoginRequest body) {
+        String username = body.username();
+        String password = body.password();
 
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
