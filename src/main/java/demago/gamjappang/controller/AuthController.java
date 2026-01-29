@@ -6,9 +6,12 @@ import demago.gamjappang.model.User;
 import demago.gamjappang.service.UserService;
 import demago.gamjappang.jwt.JwtTokenProvider;
 import demago.gamjappang.config.auth.PrincipalDetails;
+import demago.gamjappang.service.MailService;
 
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,18 +31,31 @@ public class AuthController {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final MailService mailService;
+
     @Autowired
     public AuthController(UserService userService,
                           AuthenticationManager authenticationManager,
-                          JwtTokenProvider jwtTokenProvider) {
+                          JwtTokenProvider jwtTokenProvider,
+                          MailService mailService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.mailService = mailService;
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody JoinRequest request) {
+    public ResponseEntity<?> join(@RequestBody JoinRequest request) throws MessagingException {
         User saved = userService.registerLocalUser(request.toEntity());
+        String email = saved.getEmail();
+
+        boolean isSend = mailService.sendSimpleMessage(email);
+        if (isSend) {
+            System.out.println("인증 코드가 전송되었습니다.");
+        } else {
+            System.out.println("인증 코드 발급에 실패하였습니다.");
+        }
+
         return ResponseEntity.ok().body(
                 java.util.Map.of(
                         "id", saved.getId(),
