@@ -23,12 +23,35 @@ public class UserService {
     @Transactional
     public User registerLocalUser(User user) {
         user.setRole("ROLE_USER");
+        user.setVerified(false);
 
         if (user.getPassword() != null && !user.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public User setAuthCode(String email, String code) {
+        User user = userRepository.findByEmail(email);
+        user.setAuthCode(code);
+
+        return userRepository.save(user);
+    }
+
+    // 이따 exception으로 바꿔야됨
+    @Transactional
+    public User verifyLocalUser(String username, String authCode) {
+        User user = userRepository.findByUsername(username);
+        String userAuthCode = userRepository.findByUsername(username).getAuthCode();
+
+        if (userAuthCode.equals(authCode)) {
+            user.setVerified(true);
+            return userRepository.save(user);
+        } else  {
+            return null;
+        }
     }
 
     // OAuth 로그인 시 provider/providerId 기반으로 찾고 없으면 생성
