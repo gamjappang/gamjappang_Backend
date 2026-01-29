@@ -14,6 +14,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class MailService {
     private final JavaMailSender javaMailSender;
+    private final UserService userService;
 
     @Value("{spring.mail.username}")
     private static String senderEmail;
@@ -54,7 +55,8 @@ public class MailService {
 
         MimeMessage message = createMail(sendEmail, authCode); // 메일 생성
         try {
-            javaMailSender.send(message); // 메일 발송
+            javaMailSender.send(message);// 메일 발송
+            userService.setAuthCode(sendEmail, authCode);
             return true;
         } catch (MailException e) {
             return false;
