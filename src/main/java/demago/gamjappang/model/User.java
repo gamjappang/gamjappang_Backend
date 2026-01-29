@@ -14,15 +14,23 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String username;
+
     private String password;
+
     private String email;
+
     private String role;
+
+    private String imageUrl;
 
 //    private Timestamp lastLogin;
 
     private String provider;
     private String providerId;
+
+    private boolean verified;
 
     @CreationTimestamp
     private java.time.LocalDateTime createdDate;
@@ -39,10 +47,11 @@ public class User {
     }
 
     @Builder
-    public User(Long id, String username, String password, String email, String role, String provider, String providerId) {
+    public User(Long id, String username, String password, String email, String role, String provider, String providerId, String imageUrl) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.imageUrl = imageUrl;
         this.email = email;
         this.role = role;
         this.provider = provider;
