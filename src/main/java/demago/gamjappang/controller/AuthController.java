@@ -1,7 +1,8 @@
 package demago.gamjappang.controller;
 
-import demago.gamjappang.dto.auth.JoinRequest;
 import demago.gamjappang.dto.auth.LoginRequest;
+import demago.gamjappang.dto.auth.JoinRequest;
+import demago.gamjappang.dto.auth.verityRequest;
 import demago.gamjappang.model.User;
 import demago.gamjappang.service.UserService;
 import demago.gamjappang.jwt.JwtTokenProvider;
@@ -11,7 +12,6 @@ import demago.gamjappang.service.MailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,6 +60,21 @@ public class AuthController {
                 java.util.Map.of(
                         "id", saved.getId(),
                         "username", saved.getUsername()
+                )
+        );
+    }
+
+    @PostMapping("/join/verify")
+    public ResponseEntity<?> verification(@RequestBody verityRequest verityRequest) {
+        String username = verityRequest.getUsername();
+        String authCode = verityRequest.getAuthCode();
+
+        User veritedUser = userService.verifyLocalUser(username, authCode);
+
+        return ResponseEntity.ok().body(
+                java.util.Map.of(
+                        "id", veritedUser.getId(),
+                        "username", veritedUser.getUsername()
                 )
         );
     }
