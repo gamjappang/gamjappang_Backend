@@ -87,9 +87,9 @@ public class AuthController {
     // accessToken: 프론트에서 Authorization: Bearer {token} 으로 전송
     // refreshToken: access 만료 시 /refresh 로 보내서 access 재발급
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest body) {
-        String username = body.username();
-        String password = body.password();
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+        String username = loginRequest.username();
+        String password = loginRequest.password();
 
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
