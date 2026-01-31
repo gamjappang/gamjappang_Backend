@@ -40,7 +40,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // 이따 exception으로 바꿔야됨
     @Transactional
     public User verifyLocalUser(String username, String authCode) {
         User user = userRepository.findByUsername(username);
