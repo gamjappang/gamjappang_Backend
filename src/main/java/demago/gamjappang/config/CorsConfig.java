@@ -24,7 +24,8 @@ public class CorsConfig {
         // 쿠키, 인증정보 포함 요청 허용
         config.setAllowCredentials(true);
 
-//        config.setExposedHeaders(List.of("Set-Cookie"));
+        // Bearer 토큰 방식이면 쿠키를 실어 보내지 않으므로 false
+        config.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
